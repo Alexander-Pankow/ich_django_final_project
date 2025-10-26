@@ -14,8 +14,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 # API schema and documentation (language-independent)
 # Схема API и документация (не зависят от языка)
 urlpatterns = [
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
     path('', include('apps.common.urls')),  # главная страница
 ]
 
@@ -23,6 +22,8 @@ urlpatterns = [
 # Локализованные маршруты (админка и API)
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/v1/users/', include('apps.users.urls')),
     path('api/v1/listings/', include('apps.listings.urls')),
     path('api/v1/bookings/', include('apps.bookings.urls')),

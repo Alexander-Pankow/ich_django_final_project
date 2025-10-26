@@ -14,9 +14,6 @@ logger = getLogger(__name__)
     get=extend_schema(
         summary=_("List reviews for listing"),  # Список отзывов для объявления
         description=_("Public endpoint to get reviews for a specific listing."),  # Публичный эндпоинт для получения отзывов к конкретному объявлению
-        parameters=[
-            ("listing_id", _("Listing ID"), "path", int, True),  # ID объявления
-        ],
         responses={200: ReviewSerializer(many=True)},
     ),
     post=extend_schema(

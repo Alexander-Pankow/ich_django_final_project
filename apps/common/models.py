@@ -1,9 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-
 
 class ActiveManager(models.Manager):
     """Manager that returns only non-deleted (active) instances."""

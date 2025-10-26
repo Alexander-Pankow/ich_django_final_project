@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from .models import Booking
 from .serializers import BookingSerializer
@@ -108,7 +109,8 @@ class BookingActionView(generics.UpdateAPIView):
                 if booking.tenant != user:
                     logger.warning(f"User {user.id} attempted to cancel booking {booking.id} without permission")
                     return Response(
-                        {"error": _("Only the tenant can cancel the booking.")},  # Только арендатор может отменить бронирование
+                        {"error": _("Only the tenant can cancel the booking.")},
+                        # Только арендатор может отменить бронирование
                         status=status.HTTP_403_FORBIDDEN
                     )
                 validate_booking_cancellation(booking, user)
@@ -116,18 +118,22 @@ class BookingActionView(generics.UpdateAPIView):
 
             elif action == "confirm":
                 if booking.listing.owner != user:
-                    logger.warning(f"User {user.id} attempted to confirm booking {booking.id} without being the landlord")
+                    logger.warning(
+                        f"User {user.id} attempted to confirm booking {booking.id} without being the landlord")
                     return Response(
-                        {"error": _("Only the landlord can confirm the booking.")},  # Только арендодатель может подтвердить бронирование
+                        {"error": _("Only the landlord can confirm the booking.")},
+                        # Только арендодатель может подтвердить бронирование
                         status=status.HTTP_403_FORBIDDEN
                     )
                 booking.status = "confirmed"
 
             elif action == "reject":
                 if booking.listing.owner != user:
-                    logger.warning(f"User {user.id} attempted to reject booking {booking.id} without being the landlord")
+                    logger.warning(
+                        f"User {user.id} attempted to reject booking {booking.id} without being the landlord")
                     return Response(
-                        {"error": _("Only the landlord can reject the booking.")},  # Только арендодатель может отклонить бронирование
+                        {"error": _("Only the landlord can reject the booking.")},
+                        # Только арендодатель может отклонить бронирование
                         status=status.HTTP_403_FORBIDDEN
                     )
                 booking.status = "cancelled"
@@ -135,7 +141,8 @@ class BookingActionView(generics.UpdateAPIView):
             else:
                 logger.warning(f"Invalid booking action '{action}' requested by user {user.id}")
                 return Response(
-                    {"error": _("Invalid action. Use: cancel, confirm, reject.")},  # Недопустимое действие. Используйте: cancel, confirm, reject
+                    {"error": _("Invalid action. Use: cancel, confirm, reject.")},
+                    # Недопустимое действие. Используйте: cancel, confirm, reject
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -143,9 +150,13 @@ class BookingActionView(generics.UpdateAPIView):
             logger.info(f"Booking {booking.id} status updated to '{booking.status}' by user {user.id}")
             return Response(self.get_serializer(booking).data)
 
+        except ValidationError as e:
+            logger.warning(f"Validation error in BookingActionView.update: {e.detail}")
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             logger.error(f"Unexpected error in BookingActionView.update: {e}", exc_info=True)
             return Response(
-                {"error": _("An internal error occurred while processing the request.")},  # Произошла внутренняя ошибка при обработке запроса
+                {"error": _("An internal error occurred while processing the request.")},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

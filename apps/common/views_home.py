@@ -33,7 +33,7 @@ def home(request):
         <body>
             <h1>Ich Django Final Project</h1>
             <a href="/api/docs/" class="button">Swagger UI</a>
-            <a href="/admin/" class="button">Админка</a>
+            <a href="/admin/" class="button">Admin panel</a>
         </body>
     </html>
     """

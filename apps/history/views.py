@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from .models import SearchQuery
 from .serializers import PopularSearchSerializer
@@ -27,7 +28,7 @@ class PopularSearchView(generics.GenericAPIView):
     # Возвращает топ-10 популярных поисковых запросов
 
     serializer_class = PopularSearchSerializer
-
+    permission_classes = [AllowAny]
     def get(self, request, *args: Any, **kwargs: Any) -> Response:
         """Handle GET request for popular search queries."""
         # Обрабатывает GET-запрос для популярных запросов

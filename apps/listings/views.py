@@ -1,5 +1,5 @@
 from logging import getLogger
-from django.db.models import Count, Q
+from django.db.models import Count
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -18,15 +18,6 @@ logger = getLogger(__name__)
     get=extend_schema(
         summary=_("List listings"),  # Список объявлений
         description=_("Public endpoint to list active listings with filtering and search."),  # Публичный эндпоинт для просмотра активных объявлений с фильтрацией и поиском
-        parameters=[
-            ("search", _("Search in title/description"), "query", str, False),  # Поиск в заголовке/описании
-            ("price_min", _("Minimum price"), "query", float, False),  # Минимальная цена
-            ("price_max", _("Maximum price"), "query", float, False),  # Максимальная цена
-            ("rooms_min", _("Minimum rooms"), "query", int, False),  # Минимум комнат
-            ("rooms_max", _("Maximum rooms"), "query", int, False),  # Максимум комнат
-            ("housing_type", _("Housing type"), "query", str, False),  # Тип жилья
-            ("city", _("City name"), "query", str, False),  # Название города
-        ],
         responses={200: ListingSerializer(many=True)},
     ),
     post=extend_schema(

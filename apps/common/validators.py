@@ -1,6 +1,7 @@
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from datetime import timedelta
 from decimal import Decimal
 
 
@@ -98,13 +99,14 @@ def validate_booking_for_review(booking):
 def validate_booking_cancellation(booking, user):
     """Validate that tenant can cancel booking at least 7 days before start."""
     # Проверяет, что отмена возможна не позже чем за 7 дней до заезда
-    from datetime import timedelta
 
     if booking.tenant != user:
-        raise ValidationError(_("Only the tenant can cancel this booking."))  # Только арендатор может отменить это бронирование.
+        raise ValidationError(
+            {"detail": _("Only the tenant can cancel this booking.")}  # Только арендатор может отменить это бронирование.
+        )
 
     today = timezone.now().date()
     if booking.start_date < today + timedelta(days=7):
         raise ValidationError(
-            _("Cancellation is only allowed at least 7 days before the start date.")  # Отмена разрешена только минимум за 7 дней до даты заезда.
+            {"detail": _("Cancellation is only allowed at least 7 days before the start date.")}  # Отмена разрешена только минимум за 7 дней до даты заезда.
         )

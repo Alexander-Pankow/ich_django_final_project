@@ -57,4 +57,7 @@ class IsBookingOwnerOrLandlord(permissions.BasePermission):
         # Проверяет, является ли пользователь арендатором бронирования или владельцем объявления
         if not request.user.is_authenticated:
             return False
-        return obj.tenant == request.user or obj.listing.owner == request.user.tenant == request.user or obj.listing.owner == request.userser
+        return (
+            obj.tenant == request.user
+            or obj.listing.owner == request.user
+        )
