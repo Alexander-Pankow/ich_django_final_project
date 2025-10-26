@@ -18,7 +18,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=[
         ('tenant', _('Tenant')),        # Арендатор
         ('landlord', _('Landlord'))     # Арендодатель
-    ])
+    ],
+        write_only=True
+    )
 
     class Meta:
         model = User

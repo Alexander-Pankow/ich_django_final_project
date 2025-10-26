@@ -39,7 +39,7 @@ class User(AbstractUser):
     """Custom User model with email as the unique identifier."""
     # Кастомная модель пользователя с email в качестве уникального идентификатора
 
-    username = None  # Убираем username, как того требует ТЗ
+    username = None  # Убираем username
     email = models.EmailField(
         _('Email address'),  # Адрес электронной почты
         unique=True

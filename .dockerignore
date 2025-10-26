@@ -1,0 +1,13 @@
+Dockerfile
+db.sqlite3
+.gitignore
+.dockerignore
+logs/
+utils/
+.git
+__pycache__
+*.pyc
+venv/
+.DS_Store
+*.sqlite3
+data.json

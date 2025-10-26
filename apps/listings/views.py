@@ -9,6 +9,7 @@ from .models import Listing
 from .serializers import ListingSerializer
 from apps.common.permissions import IsLandlord, IsOwner
 from apps.history.models import SearchQuery, ViewHistory
+from .filters import ListingFilter
 
 logger = getLogger(__name__)
 
@@ -46,9 +47,10 @@ class ListingListView(generics.ListCreateAPIView):
     On search, saves query to history for authenticated users.
     """
     # Получение активных объявлений (публично) или создание (только арендодатели); поддержка поиска, фильтрации, сортировки
-
+    queryset = Listing.objects.filter(is_active=True, is_deleted=False)
     serializer_class = ListingSerializer
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
+    filterset_class = ListingFilter
     ordering_fields = ["price", "created_at"]
     ordering = ["-created_at"]
 
@@ -60,48 +62,22 @@ class ListingListView(generics.ListCreateAPIView):
         return [permissions.AllowAny()]
 
     def get_queryset(self):
-        """Return active, non-deleted listings with optional search and filters."""
-        # Возвращает активные, неудалённые объявления с опциональной фильтрацией
-        queryset = Listing.objects.filter(is_active=True, is_deleted=False)
-        params = self.request.query_params
+        """Return active, non-deleted listings."""
+        # Всё фильтруется автоматически через ListingFilter
+        return Listing.objects.filter(is_active=True, is_deleted=False)
 
-        search = params.get("search")
-        if search:
-            queryset = queryset.filter(
-                Q(title__icontains=search) | Q(description__icontains=search)
-            )
-            if self.request.user.is_authenticated:
-                try:
-                    SearchQuery.objects.get_or_create(user=self.request.user, query=search)
-                    logger.info(f"Saved search query '{search}' for user {self.request.user.id}")
-                except Exception as e:
-                    logger.error(f"Failed to save search query '{search}' for user {self.request.user.id}: {e}")
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
 
-        price_min = params.get("price_min")
-        if price_min:
-            queryset = queryset.filter(price__gte=price_min)
+        search = request.query_params.get("search")
+        if search and request.user.is_authenticated:
+            try:
+                SearchQuery.objects.get_or_create(user=request.user, query=search)
+                logger.info(f"Saved search query '{search}' for user {request.user.id}")
+            except Exception as e:
+                logger.error(f"Failed to save search query: {e}")
 
-        price_max = params.get("price_max")
-        if price_max:
-            queryset = queryset.filter(price__lte=price_max)
-
-        rooms_min = params.get("rooms_min")
-        if rooms_min:
-            queryset = queryset.filter(rooms__gte=rooms_min)
-
-        rooms_max = params.get("rooms_max")
-        if rooms_max:
-            queryset = queryset.filter(rooms__lte=rooms_max)
-
-        housing_type = params.get("housing_type")
-        if housing_type:
-            queryset = queryset.filter(housing_type=housing_type)
-
-        city = params.get("city")
-        if city:
-            queryset = queryset.filter(city__icontains=city)
-
-        return queryset
+        return response
 
     def perform_create(self, serializer):
         """Assign the current user as the listing owner and log the event."""
