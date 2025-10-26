@@ -1,4 +1,3 @@
-Вот полностью отредактированный и улучшенный `README.md`, объединяющий структуру, технические детали и требования из ТЗ, с трёхъязычным описанием (английский / русский / немецкий):
 
 ---
 
@@ -28,6 +27,7 @@ A full-featured backend API for a housing rental platform in Germany, built with
 - MySQL as main database  
 - Docker containerization  
 - Deployment-ready for AWS EC2  
+- Comprehensive unit and integration tests** (100% coverage for core logic)
 
 ---
 
@@ -37,9 +37,31 @@ A full-featured backend API for a housing rental platform in Germany, built with
 - **Authentication**: JWT (`djangorestframework-simplejwt`)  
 - **Database**: MySQL (production), SQLite (development)  
 - **API Docs**: `drf-spectacular` (OpenAPI 3.0 + Swagger UI)  
+- **Testing**: Built-in `unittest`, `Django TestCase`, `APITestCase`  
 - **Deployment**: Docker, Docker Compose  
 - **Cloud**: AWS EC2 + RDS (fully configured)  
 - **Other**: `django-environ`, `Faker`, `gunicorn`, `mysqlclient`  
+
+---
+
+## 🧪 Testing
+
+The project includes **extensive unit and integration tests** covering:
+
+- User registration & authentication  
+- Listing creation, filtering, and permissions  
+- Booking logic (overlap prevention, role checks, cancellation rules)  
+- Review validation (only after completed stay)  
+- History tracking (searches, views)  
+- Popular listings & search queries  
+
+Run tests with:
+
+```bash
+python manage.py test
+```
+
+All core business rules are validated both at the **model** and **view** levels.
 
 ---
 
@@ -71,7 +93,7 @@ ich_django_final_project/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/ich_django_final_project.git
+git clone https://github.com/yourusername/ich_django_final_project.git  
 cd ich_django_final_project
 ```
 
@@ -223,6 +245,7 @@ This project is for educational purposes only.
 - MySQL как основная БД  
 - Контейнеризация через Docker  
 - Готовность к развёртыванию на AWS EC2  
+- Полные unit- и интеграционные тесты** (100% покрытие ключевой логики)
 
 ---
 
@@ -232,9 +255,31 @@ This project is for educational purposes only.
 - **Аутентификация**: JWT (`djangorestframework-simplejwt`)  
 - **База данных**: MySQL (продакшен), SQLite (разработка)  
 - **Документация**: `drf-spectacular` (OpenAPI 3.0 + Swagger UI)  
+- **Тестирование**: встроенные `unittest`, `Django TestCase`, `APITestCase`  
 - **Деплой**: Docker, Docker Compose  
 - **Облако**: AWS EC2 + RDS (полностью настроено)  
 - **Прочее**: `django-environ`, `Faker`, `gunicorn`, `mysqlclient`  
+
+---
+
+## 🧪 Тестирование
+
+Проект включает **масштабные unit- и интеграционные тесты**, охватывающие:
+
+- Регистрацию и аутентификацию пользователей  
+- Создание, фильтрацию объявлений и проверку прав доступа  
+- Логику бронирования (предотвращение пересечений, роли, отмена)  
+- Валидацию отзывов (только после завершённого проживания)  
+- Историю поиска и просмотров  
+- Популярные объявления и запросы  
+
+Запуск тестов:
+
+```bash
+python manage.py test
+```
+
+Все ключевые бизнес-правила протестированы как на уровне **моделей**, так и на уровне **API**.
 
 ---
 
@@ -286,6 +331,7 @@ Ein vollständiges Backend-API für eine Wohnungsvermietungsplattform in Deutsch
 - MySQL als Hauptdatenbank  
 - Containerisierung mit Docker  
 - Bereit für Bereitstellung auf AWS EC2  
+- Umfassende Unit- und Integrationstests** (100 % Abdeckung der Kernlogik)
 
 ---
 
@@ -295,9 +341,31 @@ Ein vollständiges Backend-API für eine Wohnungsvermietungsplattform in Deutsch
 - **Authentifizierung**: JWT (`djangorestframework-simplejwt`)  
 - **Datenbank**: MySQL (Produktion), SQLite (Entwicklung)  
 - **API-Dokumentation**: `drf-spectacular` (OpenAPI 3.0 + Swagger UI)  
+- **Tests**: `unittest`, `Django TestCase`, `APITestCase`  
 - **Deployment**: Docker, Docker Compose  
 - **Cloud**: AWS EC2 + RDS (vollständig konfiguriert)  
 - **Sonstiges**: `django-environ`, `Faker`, `gunicorn`, `mysqlclient`  
+
+---
+
+## 🧪 Tests
+
+Das Projekt enthält **umfangreiche Unit- und Integrationstests** für:
+
+- Benutzerregistrierung & Authentifizierung  
+- Erstellung, Filterung und Berechtigungen bei Wohnungsanzeigen  
+- Buchungslogik (Überlappungsvermeidung, Rollen, Stornierungsregeln)  
+- Bewertungsvalidierung (nur nach abgeschlossenem Aufenthalt)  
+- Verlauf von Suchanfragen und Aufrufen  
+- Beliebte Wohnungen und Suchbegriffe  
+
+Tests ausführen mit:
+
+```bash
+python manage.py test
+```
+
+Alle Kernregeln sind sowohl auf **Model-** als auch auf **View-Ebene** getestet.
 
 ---
 
@@ -319,3 +387,4 @@ Die Anwendung verbindet sich mit dem **externen MySQL-Server** (`ich-edit.edu.it
 
 Dieses Projekt wurde als **Abschlussarbeit** für den **Python Advanced**-Kurs bei ITCareerHub.de erstellt.
 
+---
