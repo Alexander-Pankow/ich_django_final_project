@@ -16,7 +16,8 @@ from apps.common.validators import (
 
 
 class Booking(BaseModel):
-    """Represents a booking of a listing by a tenant for a specific period.
+    """
+    Represents a booking of a listing by a tenant for a specific period.
 
     Includes validation for date ranges, ownership, overlapping bookings,
     and automatic total price calculation based on listing price and duration.
@@ -64,7 +65,8 @@ class Booking(BaseModel):
     )
 
     def clean(self):
-        """Performs business logic validation before saving the booking.
+        """
+        Performs business logic validation before saving the booking.
 
         Validates:
         - end date is after start date,
@@ -102,7 +104,8 @@ class Booking(BaseModel):
                     validate_no_overlapping_booking(self.listing, self.start_date, self.end_date)
 
     def save(self, *args, **kwargs):
-        """Saves the booking instance to the database.
+        """
+        Saves the booking instance to the database.
 
         Automatically recalculates total_price if start_date or end_date changes.
         Runs full_clean() unless skip_validation=True is passed.

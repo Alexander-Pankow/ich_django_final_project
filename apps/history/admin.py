@@ -5,7 +5,9 @@ from .models import SearchQuery, ViewHistory
 
 @admin.register(SearchQuery)
 class SearchQueryAdmin(admin.ModelAdmin):
-    """Admin interface for search query history."""
+    """
+    Admin interface for search query history.
+    """
     # Админка истории поисковых запросов
 
     list_display = ('user_email', 'query', 'created_at')
@@ -16,14 +18,18 @@ class SearchQueryAdmin(admin.ModelAdmin):
 
     @admin.display(description=_('User'))  # Пользователь
     def user_email(self, obj):
-        """Display user email or 'Anonymous' if user is deleted."""
+        """
+        Display user email or 'Anonymous' if user is deleted.
+        """
         # Отображает email пользователя или 'Аноним', если пользователь удалён
         return obj.user.email if obj.user else _('Anonymous')  # Аноним
 
 
 @admin.register(ViewHistory)
 class ViewHistoryAdmin(admin.ModelAdmin):
-    """Admin interface for listing view history."""
+    """
+    Admin interface for listing view history.
+    """
     # Админка истории просмотров объявлений
 
     list_display = ('user_email', 'listing_title', 'created_at')
@@ -34,12 +40,16 @@ class ViewHistoryAdmin(admin.ModelAdmin):
 
     @admin.display(description=_('User'))  # Пользователь
     def user_email(self, obj):
-        """Display user email or 'Anonymous' if user is deleted."""
+        """
+        Display user email or 'Anonymous' if user is deleted.
+        """
         # Отображает email пользователя или 'Аноним', если пользователь удалён
         return obj.user.email if obj.user else _('Anonymous')  # Аноним
 
     @admin.display(description=_('Listing'))  # Объявление
     def listing_title(self, obj):
-        """Display the title of the viewed listing."""
+        """
+        Display the title of the viewed listing.
+        """
         # Отображает заголовок просмотренного объявления
-        return obj.listing.title if obj.listing else _('Deleted listing')  # Удалённое объявление
+        return obj.listing.title if obj.listing else _('Deleted listing')

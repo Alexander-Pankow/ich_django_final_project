@@ -3,14 +3,17 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ActiveManager(models.Manager):
-    """Manager that returns only non-deleted (active) instances."""
+    """
+    Manager that returns only non-deleted (active) instances.
+    """
     # Менеджер, возвращающий только неудалённые (активные) объекты
     def get_queryset(self):
         return super().get_queryset().filter(is_deleted=False)
 
 
 class BaseModel(models.Model):
-    """Abstract base model with soft-delete and timestamps.
+    """
+    Abstract base model with soft-delete and timestamps.
 
     Provides:
     - created_at / updated_at auto timestamps,
@@ -41,7 +44,9 @@ class BaseModel(models.Model):
         ordering = ['-created_at']
 
     def delete(self, *args, **kwargs):
-        """Performs soft delete by setting is_deleted=True instead of removing from DB."""
+        """
+        Performs soft delete by setting is_deleted=True instead of removing from DB.
+        """
         # Выполняет мягкое удаление: устанавливает is_deleted=True вместо физического удаления
         self.is_deleted = True
         self.save(update_fields=['is_deleted'])

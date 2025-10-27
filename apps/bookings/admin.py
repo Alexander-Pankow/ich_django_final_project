@@ -5,7 +5,8 @@ from .models import Booking
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    """Admin interface for managing Booking instances.
+    """
+    Admin interface for managing Booking instances.
 
     Provides list display with tenant/listing info, filtering by status and dates,
     search by email/title/city, read-only price fields, and organized fieldsets.
@@ -25,13 +26,17 @@ class BookingAdmin(admin.ModelAdmin):
 
     @admin.display(description=_('Tenant'), ordering='tenant__email')  # Арендатор
     def tenant_email(self, obj):
-        """Returns the email of the booking's tenant."""
+        """
+        Returns the email of the booking's tenant.
+        """
         # Возвращает email арендатора
         return obj.tenant.email
 
     @admin.display(description=_('Listing'), ordering='listing__title')  # Объявление
     def listing_title(self, obj):
-        """Returns the title of the booked listing."""
+        """
+        Returns the title of the booked listing.
+        """
         # Возвращает заголовок объявления
         return obj.listing.title
 

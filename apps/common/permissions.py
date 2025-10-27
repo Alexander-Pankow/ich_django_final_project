@@ -3,13 +3,17 @@ from rest_framework import permissions
 
 
 class IsLandlord(permissions.BasePermission):
-    """Allow access only to landlords."""
+    """
+    Allow access only to landlords.
+    """
     # Разрешает доступ только арендодателям
 
     message = _("Access allowed for landlords only.")  # Доступ разрешён только арендодателям.
 
     def has_permission(self, request, view):
-        """Check if user is authenticated and belongs to the 'Landlords' group."""
+        """
+        Check if user is authenticated and belongs to the 'Landlords' group.
+        """
         # Проверяет, авторизован ли пользователь и состоит ли в группе арендодателей
         return (
             request.user.is_authenticated
@@ -18,13 +22,17 @@ class IsLandlord(permissions.BasePermission):
 
 
 class IsTenant(permissions.BasePermission):
-    """Allow access only to tenants."""
+    """
+    Allow access only to tenants.
+    """
     # Разрешает доступ только арендаторам
 
     message = _("Access allowed for tenants only.")  # Доступ разрешён только арендаторам.
 
     def has_permission(self, request, view):
-        """Check if user is authenticated and belongs to the 'Tenants' group."""
+        """
+        Check if user is authenticated and belongs to the 'Tenants' group.
+        """
         # Проверяет, авторизован ли пользователь и состоит ли в группе арендаторов
         return (
             request.user.is_authenticated
@@ -33,13 +41,17 @@ class IsTenant(permissions.BasePermission):
 
 
 class IsOwner(permissions.BasePermission):
-    """Allow access only to the owner of the object."""
+    """
+    Allow access only to the owner of the object.
+    """
     # Разрешает доступ только владельцу объекта
 
     message = _("You are not the owner of this object.")  # Вы не являетесь владельцем этого объекта.
 
     def has_object_permission(self, request, view, obj):
-        """Check if the requesting user is the owner of the object."""
+        """
+        Check if the requesting user is the owner of the object.
+        """
         # Проверяет, является ли пользователь владельцем объекта
         if not request.user.is_authenticated:
             return False
@@ -47,13 +59,17 @@ class IsOwner(permissions.BasePermission):
 
 
 class IsBookingOwnerOrLandlord(permissions.BasePermission):
-    """Allow access to the booking tenant or the listing landlord."""
+    """
+    Allow access to the booking tenant or the listing landlord.
+    """
     # Разрешает доступ арендатору бронирования или арендодателю объявления
 
     message = _("You do not have permission to access this booking.")  # У вас нет прав для доступа к этому бронированию.
 
     def has_object_permission(self, request, view, obj):
-        """Check if user is either the booking tenant or the listing owner."""
+        """
+        Check if user is either the booking tenant or the listing owner.
+        """
         # Проверяет, является ли пользователь арендатором бронирования или владельцем объявления
         if not request.user.is_authenticated:
             return False

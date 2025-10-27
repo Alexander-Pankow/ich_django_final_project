@@ -11,7 +11,10 @@ from apps.listings.models import Listing
 
 
 class BookingModelTest(TestCase):
-    """Booking model tests."""  # Тесты модели бронирования
+    """
+    Booking model tests.
+    """
+    # Тесты модели бронирования
 
     def setUp(self):
         Group.objects.get_or_create(name="Landlords")
@@ -39,7 +42,10 @@ class BookingModelTest(TestCase):
         )
 
     def test_booking_creation(self):
-        """Test booking creation."""  # Тест создания бронирования
+        """
+        Test booking creation.
+        """
+        # Тест создания бронирования
         start_date = timezone.now().date() + timedelta(days=10)
         end_date = timezone.now().date() + timedelta(days=12)
         booking = Booking.objects.create(
@@ -52,7 +58,10 @@ class BookingModelTest(TestCase):
         self.assertEqual(booking.status, "pending")
 
     def test_overlapping_booking_validation(self):
-        """Test overlapping booking validation."""  # Тест валидации пересекающихся бронирований
+        """
+        Test overlapping booking validation.
+        """
+        # Тест валидации пересекающихся бронирований
         start_date = timezone.now().date() + timedelta(days=10)
         end_date = timezone.now().date() + timedelta(days=12)
         Booking.objects.create(
@@ -72,7 +81,10 @@ class BookingModelTest(TestCase):
             )
 
     def test_cannot_book_own_listing(self):
-        """Test that a user cannot book their own listing."""  # Тест запрета бронирования своего жилья
+        """
+        Test that a user cannot book their own listing.
+        """
+        # Тест запрета бронирования своего жилья
         start_date = timezone.now().date() + timedelta(days=10)
         end_date = timezone.now().date() + timedelta(days=12)
         with self.assertRaises(Exception):
@@ -85,7 +97,10 @@ class BookingModelTest(TestCase):
 
 
 class BookingListViewTest(APITestCase):
-    """Tests for listing and creating bookings."""  # Тесты списка и создания бронирований
+    """
+    Tests for listing and creating bookings.
+    """
+    # Тесты списка и создания бронирований
 
     def setUp(self):
         Group.objects.get_or_create(name="Landlords")
@@ -113,7 +128,10 @@ class BookingListViewTest(APITestCase):
         )
 
     def test_create_booking_tenant(self):
-        """Test tenant can create a booking."""  # Тест создания бронирования арендатором
+        """
+        Test tenant can create a booking.
+        """
+        # Тест создания бронирования арендатором
         self.client.force_authenticate(user=self.tenant)
         url = reverse("booking-list")
         start_date = (timezone.now().date() + timedelta(days=10)).isoformat()
@@ -131,7 +149,10 @@ class BookingListViewTest(APITestCase):
         self.assertEqual(booking.total_price, 3000.00)
 
     def test_create_booking_landlord_forbidden(self):
-        """Test landlord cannot create a booking."""  # Тест запрета создания бронирования арендодателем
+        """
+        Test landlord cannot create a booking.
+        """
+        # Тест запрета создания бронирования арендодателем
         self.client.force_authenticate(user=self.landlord)
         url = reverse("booking-list")
         start_date = (timezone.now().date() + timedelta(days=10)).isoformat()
@@ -145,7 +166,10 @@ class BookingListViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_bookings_tenant(self):
-        """Test tenant can list their bookings."""  # Тест списка бронирований арендатора
+        """
+        Test tenant can list their bookings.
+        """
+        # Тест списка бронирований арендатора
         self.client.force_authenticate(user=self.tenant)
         start_date = timezone.now().date() + timedelta(days=10)
         end_date = timezone.now().date() + timedelta(days=12)
@@ -161,7 +185,10 @@ class BookingListViewTest(APITestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_list_bookings_landlord(self):
-        """Test landlord can list bookings for their listings."""  # Тест списка бронирований арендодателя
+        """
+        Test landlord can list bookings for their listings.
+        """
+        # Тест списка бронирований арендодателя
         self.client.force_authenticate(user=self.landlord)
         other_tenant = User.objects.create_user(
             email="other@example.com",
@@ -184,7 +211,10 @@ class BookingListViewTest(APITestCase):
 
 
 class BookingActionViewTest(APITestCase):
-    """Tests for booking actions (cancel/confirm/reject)."""  # Тесты действий с бронированием
+    """
+    Tests for booking actions (cancel/confirm/reject).
+    """
+    # Тесты действий с бронированием
 
     def setUp(self):
         Group.objects.get_or_create(name="Landlords")
@@ -226,7 +256,10 @@ class BookingActionViewTest(APITestCase):
         )
 
     def test_cancel_booking_tenant(self):
-        """Test tenant can cancel booking (≥7 days before start)."""  # Отмена брони арендатором (за 7+ дней)
+        """
+        Test tenant can cancel booking (≥7 days before start).
+        """
+        # Отмена брони арендатором (за 7+ дней)
         self.client.force_authenticate(user=self.tenant)
         url = reverse("booking-action", args=[self.booking.id, "cancel"])
         response = self.client.patch(url)
@@ -235,7 +268,10 @@ class BookingActionViewTest(APITestCase):
         self.assertEqual(self.booking.status, "cancelled")
 
     def test_cancel_booking_too_late(self):
-        """Test tenant cannot cancel booking <7 days before start."""  # Отмена позже чем за 7 дней запрещена
+        """
+        Test tenant cannot cancel booking <7 days before start.
+        """
+        # Отмена позже чем за 7 дней запрещена
         self.booking.start_date = timezone.now().date() + timedelta(days=3)
         self.booking.save()
         self.client.force_authenticate(user=self.tenant)
@@ -244,7 +280,9 @@ class BookingActionViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_confirm_booking_landlord(self):
-        """Test landlord can confirm a booking."""  # Подтверждение брони арендодателем
+        """
+        Test landlord can confirm a booking.
+        """  # Подтверждение брони арендодателем
         self.client.force_authenticate(user=self.landlord)
         url = reverse("booking-action", args=[self.booking.id, "confirm"])
         response = self.client.patch(url)
@@ -253,7 +291,10 @@ class BookingActionViewTest(APITestCase):
         self.assertEqual(self.booking.status, "confirmed")
 
     def test_reject_booking_landlord(self):
-        """Test landlord can reject a booking."""  # Отклонение брони арендодателем
+        """
+        Test landlord can reject a booking.
+        """
+        # Отклонение брони арендодателем
         self.client.force_authenticate(user=self.landlord)
         url = reverse("booking-action", args=[self.booking.id, "reject"])
         response = self.client.patch(url)
@@ -262,21 +303,30 @@ class BookingActionViewTest(APITestCase):
         self.assertEqual(self.booking.status, "cancelled")
 
     def test_cancel_booking_landlord_forbidden(self):
-        """Test landlord cannot cancel a booking."""  # Арендодатель не может отменять бронь
+        """
+        Test landlord cannot cancel a booking.
+        """
+        # Арендодатель не может отменять бронь
         self.client.force_authenticate(user=self.landlord)
         url = reverse("booking-action", args=[self.booking.id, "cancel"])
         response = self.client.patch(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_confirm_booking_tenant_forbidden(self):
-        """Test tenant cannot confirm a booking."""  # Арендатор не может подтверждать бронь
+        """
+        Test tenant cannot confirm a booking.
+        """
+        # Арендатор не может подтверждать бронь
         self.client.force_authenticate(user=self.tenant)
         url = reverse("booking-action", args=[self.booking.id, "confirm"])
         response = self.client.patch(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_invalid_action(self):
-        """Test invalid action returns 400."""  # Недопустимое действие возвращает 400
+        """
+        Test invalid action returns 400.
+        """
+        # Недопустимое действие возвращает 400
         self.client.force_authenticate(user=self.tenant)
         url = reverse("booking-action", args=[self.booking.id, "invalid"])
         response = self.client.patch(url)

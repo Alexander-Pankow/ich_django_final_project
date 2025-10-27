@@ -14,7 +14,8 @@ logger = getLogger(__name__)
 
 @receiver(post_save, sender=Booking)
 def send_booking_notifications(sender: Any, instance: Booking, created: bool, **kwargs: Any) -> None:
-    """Send email notifications when a booking is created or status is updated.
+    """
+    Send email notifications when a booking is created or status is updated.
 
     Triggers:
     - On creation: notify tenant and landlord.
@@ -25,7 +26,6 @@ def send_booking_notifications(sender: Any, instance: Booking, created: bool, **
 
     try:
         if created:
-            # Notify tenant: "Your booking is confirmed"
             send_mail(
                 subject=_("Your booking is confirmed — %(title)s") % {"title": instance.listing.title},  # Ваше бронирование подтверждено — %(title)s
                 message=_("Hello, %(first_name)s!\n\n"
@@ -42,8 +42,6 @@ def send_booking_notifications(sender: Any, instance: Booking, created: bool, **
                 recipient_list=[instance.tenant.email],
                 fail_silently=False,
             )
-
-            # Notify landlord: "Your listing has been booked"
             send_mail(
                 subject=_("New booking — %(title)s") % {"title": instance.listing.title},  # Новое бронирование — %(title)s
                 message=_("Hello, %(first_name)s!\n\n"
@@ -62,7 +60,6 @@ def send_booking_notifications(sender: Any, instance: Booking, created: bool, **
             )
 
         elif instance.status == "confirmed" and "status" in (kwargs.get("update_fields") or []):
-            # Notify tenant: "Booking confirmed"
             send_mail(
                 subject=_("Booking confirmed — %(title)s") % {"title": instance.listing.title},  # Бронирование подтверждено — %(title)s
                 message=_("Hello, %(first_name)s!\n\n"
@@ -80,7 +77,6 @@ def send_booking_notifications(sender: Any, instance: Booking, created: bool, **
             )
 
         elif instance.status == "cancelled" and "status" in (kwargs.get("update_fields") or []):
-            # Notify tenant: "Booking cancelled"
             send_mail(
                 subject=_("Booking cancelled"),  # Бронирование отменено
                 message=_("Your booking for \"%(title)s\" has been cancelled.") % {"title": instance.listing.title},  # Ваше бронирование для "%(title)s" отменено.
@@ -88,7 +84,6 @@ def send_booking_notifications(sender: Any, instance: Booking, created: bool, **
                 recipient_list=[instance.tenant.email],
                 fail_silently=False,
             )
-            # Notify landlord: "Booking cancelled"
             send_mail(
                 subject=_("Booking cancelled"),  # Бронирование отменено
                 message=_("The booking for your listing \"%(title)s\" has been cancelled.") % {"title": instance.listing.title},  # Бронирование для вашего объявления "%(title)s" отменено.
@@ -103,7 +98,9 @@ def send_booking_notifications(sender: Any, instance: Booking, created: bool, **
 
 @receiver(post_save, sender=Review)
 def send_review_notification(sender: Any, instance: Review, created: bool, **kwargs: Any) -> None:
-    """Send email to landlord when a new review is posted."""
+    """
+    Send email to landlord when a new review is posted.
+    """
     # Отправляет email арендодателю при появлении нового отзыва
 
     if created:

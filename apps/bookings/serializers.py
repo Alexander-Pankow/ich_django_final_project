@@ -13,7 +13,8 @@ from apps.common.validators import (
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    """Serializer for creating and viewing booking instances.
+    """
+    Serializer for creating and viewing booking instances.
 
     On creation, tenant is set automatically from the request user.
     Date and time fields become read-only after booking is created.
@@ -40,7 +41,9 @@ class BookingSerializer(serializers.ModelSerializer):
         read_only_fields = ("tenant", "total_price", "status", "created_at")
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Make date/time fields read-only if instance exists (i.e., on update)."""
+        """
+        Make date/time fields read-only if instance exists (i.e., on update).
+        """
         # Делает поля даты/времени только для чтения, если объект уже существует (при обновлении)
         super().__init__(*args, **kwargs)
         if self.instance:
@@ -48,7 +51,8 @@ class BookingSerializer(serializers.ModelSerializer):
                 self.fields[field].read_only = True
 
     def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate booking against business rules using shared validators.
+        """
+        Validate booking against business rules using shared validators.
 
         Checks:
         - user is authenticated,
@@ -84,7 +88,9 @@ class BookingSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data: Dict[str, Any]) -> Booking:
-        """Create a new booking with tenant set from the current request user."""
+        """
+        Create a new booking with tenant set from the current request user.
+        """
         # Создаёт новое бронирование с арендатором из контекста запроса
         validated_data["tenant"] = self.context["request"].user
         return super().create(validated_data)

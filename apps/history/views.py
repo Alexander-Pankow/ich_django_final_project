@@ -19,18 +19,22 @@ from .serializers import PopularSearchSerializer
         description=_(
             "Returns top 10 search queries from the last 30 days. "
             "Only non-empty queries with length > 2 characters are included."
-        ),  # Возвращает топ-10 поисковых запросов за последние 30 дней. Учитываются только непустые запросы длиной > 2 символов.
+        ),
         responses={200: PopularSearchSerializer(many=True)},
     ),
 )
 class PopularSearchView(generics.GenericAPIView):
-    """Return top 10 popular search queries."""
+    """
+    Return top 10 popular search queries.
+    """
     # Возвращает топ-10 популярных поисковых запросов
 
     serializer_class = PopularSearchSerializer
     permission_classes = [AllowAny]
     def get(self, request, *args: Any, **kwargs: Any) -> Response:
-        """Handle GET request for popular search queries."""
+        """
+        Handle GET request for popular search queries.
+        """
         # Обрабатывает GET-запрос для популярных запросов
         since = timezone.now() - timedelta(days=30)
 

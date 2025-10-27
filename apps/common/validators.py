@@ -6,14 +6,18 @@ from decimal import Decimal
 
 
 def validate_future_date(value):
-    """Ensure the date is not in the past."""
+    """
+    Ensure the date is not in the past.
+    """
     # Проверяет, что дата не в прошлом
     if value < timezone.now().date():
         raise ValidationError(_("Date cannot be in the past."))  # Нельзя использовать дату из прошлого.
 
 
 def validate_price_range(value, min_price=Decimal('10.00'), max_price=Decimal('10000.00')):
-    """Validate that nightly price is within allowed range."""
+    """
+    Validate that nightly price is within allowed range.
+    """
     # Проверка диапазона цены за ночь
     if value < min_price:
         raise ValidationError(
@@ -26,14 +30,18 @@ def validate_price_range(value, min_price=Decimal('10.00'), max_price=Decimal('1
 
 
 def validate_min_rooms(value):
-    """Ensure number of rooms is at least 1."""
+    """
+    Ensure number of rooms is at least 1.
+    """
     # Проверяет, что комнат хотя бы 1
     if value < 1:
         raise ValidationError(_("Number of rooms must be at least 1."))  # Количество комнат должно быть >= 1.
 
 
 def validate_end_date_after_start(start_date, end_date):
-    """Ensure end date is strictly after start date."""
+    """
+    Ensure end date is strictly after start date.
+    """
     # Проверяет, что дата окончания позже начала
     if end_date <= start_date:
         raise ValidationError(
@@ -42,7 +50,9 @@ def validate_end_date_after_start(start_date, end_date):
 
 
 def validate_booking_duration(start_date, end_date, min_nights=1, max_nights=365):
-    """Validate booking duration is within allowed limits."""
+    """
+    Validate booking duration is within allowed limits.
+    """
     # Проверка минимального и максимального срока бронирования
     nights = (end_date - start_date).days
     if nights < min_nights:
@@ -56,7 +66,9 @@ def validate_booking_duration(start_date, end_date, min_nights=1, max_nights=365
 
 
 def validate_no_overlapping_booking(listing, start_date, end_date, exclude_id=None):
-    """Ensure no active overlapping bookings exist for the listing."""
+    """
+    Ensure no active overlapping bookings exist for the listing.
+    """
     # Проверяет, что нет пересекающихся активных бронирований
     from apps.bookings.models import Booking
     overlapping = Booking.objects.filter(
@@ -74,7 +86,9 @@ def validate_no_overlapping_booking(listing, start_date, end_date, exclude_id=No
 
 
 def validate_not_own_listing(user, listing):
-    """Prevent users from booking their own listings."""
+    """
+    Prevent users from booking their own listings.
+    """
     # Проверяет, что пользователь не бронирует своё жильё
     if listing.owner == user:
         raise ValidationError(
@@ -83,7 +97,9 @@ def validate_not_own_listing(user, listing):
 
 
 def validate_booking_for_review(booking):
-    """Ensure booking is eligible for review: confirmed/completed and ended."""
+    """
+    Ensure booking is eligible for review: confirmed/completed and ended.
+    """
     # Проверяет, что можно оставить отзыв: статус подтверждён/завершён и дата окончания в прошлом
     if booking.status not in ['confirmed', 'completed']:
         raise ValidationError(
@@ -97,7 +113,9 @@ def validate_booking_for_review(booking):
 
 
 def validate_booking_cancellation(booking, user):
-    """Validate that tenant can cancel booking at least 7 days before start."""
+    """
+    Validate that tenant can cancel booking at least 7 days before start.
+    """
     # Проверяет, что отмена возможна не позже чем за 7 дней до заезда
 
     if booking.tenant != user:

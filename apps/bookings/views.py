@@ -31,7 +31,8 @@ logger = getLogger(__name__)
     ),
 )
 class BookingListView(generics.ListCreateAPIView):
-    """List and create bookings for authenticated users.
+    """
+    List and create bookings for authenticated users.
 
     Tenants can create new bookings.
     Both tenants and landlords can view their related bookings.
@@ -41,7 +42,9 @@ class BookingListView(generics.ListCreateAPIView):
     serializer_class = BookingSerializer
 
     def get_queryset(self):
-        """Return bookings related to the current user (as tenant or landlord)."""
+        """
+        Return bookings related to the current user (as tenant or landlord).
+        """
         # Возвращает бронирования текущего пользователя (как арендатора или арендодателя)
         user = self.request.user
         tenant_bookings = Booking.objects.filter(is_deleted=False, tenant=user)
@@ -49,14 +52,18 @@ class BookingListView(generics.ListCreateAPIView):
         return tenant_bookings.union(landlord_bookings)
 
     def get_permissions(self):
-        """Apply IsTenant permission for POST, IsAuthenticated for GET."""
+        """
+        Apply IsTenant permission for POST, IsAuthenticated for GET.
+        """
         # Назначает права: POST → только арендатор, GET → любой авторизованный
         if self.request.method == "POST":
             return [IsTenant()]
         return [permissions.IsAuthenticated()]
 
     def perform_create(self, serializer):
-        """Save booking and log creation event."""
+        """
+        Save booking and log creation event.
+        """
         # Сохраняет бронирование и логирует событие создания
         booking = serializer.save(tenant=self.request.user)
         logger.info(f"Booking {booking.id} created by tenant {self.request.user.id}")
@@ -70,7 +77,9 @@ class BookingListView(generics.ListCreateAPIView):
     )
 )
 class BookingDetailView(generics.RetrieveAPIView):
-    """Retrieve a single booking by ID with ownership validation."""
+    """
+    Retrieve a single booking by ID with ownership validation.
+    """
     # Получение одного бронирования с проверкой прав доступа
 
     queryset = Booking.objects.filter(is_deleted=False)
@@ -90,7 +99,9 @@ class BookingDetailView(generics.RetrieveAPIView):
     )
 )
 class BookingActionView(generics.UpdateAPIView):
-    """Handle booking status changes via URL actions (cancel/confirm/reject)."""
+    """
+    Handle booking status changes via URL actions (cancel/confirm/reject).
+    """
     # Обработка изменений статуса бронирования через действия в URL
 
     queryset = Booking.objects.filter(is_deleted=False)
@@ -98,7 +109,9 @@ class BookingActionView(generics.UpdateAPIView):
     permission_classes = [IsBookingOwnerOrLandlord]
 
     def update(self, request, *args, **kwargs):
-        """Process booking action (cancel/confirm/reject) based on URL parameter."""
+        """
+        Process booking action (cancel/confirm/reject) based on URL parameter.
+        """
         # Обрабатывает действие с бронированием (отмена/подтверждение/отказ)
         try:
             booking = self.get_object()

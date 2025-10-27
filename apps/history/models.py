@@ -6,7 +6,9 @@ from apps.listings.models import Listing
 
 
 class SearchQuery(BaseModel):
-    """Represents a search query made by a user (or anonymous)."""
+    """
+    Represents a search query made by a user (or anonymous).
+    """
     # Представляет поисковый запрос, сделанный пользователем (или анонимом)
 
     user = models.ForeignKey(
@@ -32,7 +34,9 @@ class SearchQuery(BaseModel):
 
 
 class ViewHistory(BaseModel):
-    """Records when a user views a listing."""
+    """
+    Records when a user views a listing.
+    """
     # Фиксирует факт просмотра объявления пользователем
 
     user = models.ForeignKey(
