@@ -6,7 +6,9 @@ from .models import User
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """Serializer for user registration with role assignment (tenant/landlord)."""
+    """
+    Serializer for user registration with role assignment (tenant/landlord).
+    """
     # Сериализатор регистрации пользователя с назначением роли (арендатор/арендодатель)
 
     password = serializers.CharField(
@@ -31,7 +33,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
-        """Validate that both password fields match."""
+        """
+        Validate that both password fields match.
+        """
         # Проверяет, что пароли совпадают
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({
@@ -40,7 +44,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        """Create a new user and assign to the appropriate group (Tenants/Landlords)."""
+        """
+        Create a new user and assign to the appropriate group (Tenants/Landlords).
+        """
         # Создаёт нового пользователя и добавляет его в группу (Арендаторы/Арендодатели)
         role = validated_data.pop('role')
         validated_data.pop('password2')
@@ -53,7 +59,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer for public user profile data (without sensitive fields)."""
+    """
+    Serializer for public user profile data (without sensitive fields).
+    """
     # Сериализатор для публичных данных профиля (без чувствительной информации)
 
     class Meta:

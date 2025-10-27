@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_spectacular",
-    "whitenoise.runserver_nostatic",  # заменяет стандартный staticfiles в dev
+    "whitenoise.runserver_nostatic",
 ]
 
 # ----------------------------
@@ -162,7 +162,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en"
 TIME_ZONE = "UTC"
 USE_I18N = True
-USE_L10N = True  # deprecated in Django 5.0+, но оставлено для совместимости
+USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = [

@@ -5,7 +5,9 @@ from .models import Review
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    """Admin interface for managing user reviews on listings."""
+    """
+    Admin interface for managing user reviews on listings.
+    """
     # Админка управления отзывами пользователей на объявления
 
     list_display = (
@@ -20,13 +22,17 @@ class ReviewAdmin(admin.ModelAdmin):
 
     @admin.display(description=_('Author'))  # Автор
     def author_email(self, obj):
-        """Display the email of the review author (tenant)."""
+        """
+        Display the email of the review author (tenant).
+        """
         # Отображает email автора отзыва (арендатора)
         return obj.booking.tenant.email if obj.booking and obj.booking.tenant else '—'
 
     @admin.display(description=_('Listing'))  # Объявление
     def listing_title(self, obj):
-        """Display the title of the reviewed listing."""
+        """
+        Display the title of the reviewed listing.
+        """
         # Отображает заголовок оценённого объявления
         return obj.booking.listing.title if obj.booking and obj.booking.listing else '—'
 

@@ -28,20 +28,26 @@ logger = getLogger(__name__)
     ),
 )
 class ReviewListView(generics.ListCreateAPIView):
-    """List and create reviews for a listing."""
+    """
+    List and create reviews for a listing.
+    """
     # Получение и создание отзывов для объявления
 
     serializer_class = ReviewSerializer
 
     def get_permissions(self):
-        """Set permissions: POST → IsTenant, GET → AllowAny."""
+        """
+        Set permissions: POST → IsTenant, GET → AllowAny.
+        """
         # Назначает права: POST → арендатор, GET → все
         if self.request.method == "POST":
             return [IsTenant()]
         return [permissions.AllowAny()]
 
     def get_queryset(self):
-        """Return non-deleted reviews for the specified listing."""
+        """
+        Return non-deleted reviews for the specified listing.
+        """
         # Возвращает неудалённые отзывы для указанного объявления
         return Review.objects.filter(
             booking__listing_id=self.kwargs["listing_id"],
@@ -49,7 +55,9 @@ class ReviewListView(generics.ListCreateAPIView):
         ).select_related("booking__listing", "booking__tenant")
 
     def perform_create(self, serializer):
-        """Save review and log creation event."""
+        """
+        Save review and log creation event.
+        """
         # Сохраняет отзыв и логирует событие создания
         review = serializer.save()
         logger.info(f"Review {review.id} created by tenant {review.booking.tenant.id} for listing {review.booking.listing.id}")

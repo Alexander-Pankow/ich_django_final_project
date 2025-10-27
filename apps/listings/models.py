@@ -10,7 +10,9 @@ from apps.common.validators import validate_price_range, validate_min_rooms
 
 
 class Listing(BaseModel):
-    """Represents a housing listing in Germany with full metadata and validation."""
+    """
+    Represents a housing listing in Germany with full metadata and validation.
+    """
     # Представляет объявление о жилье в Германии с полными метаданными и валидацией
 
     title = models.CharField(
@@ -67,24 +69,28 @@ class Listing(BaseModel):
         ordering = ['-created_at']
 
     def clean(self):
-        """Validate business rules specific to German housing listings."""
+        """
+        Validate business rules specific to German housing listings.
+        """
         # Валидация бизнес-правил для объявлений о жилье в Германии
 
-        # Проверка формата немецкого почтового индекса (ровно 5 цифр)
         if self.postal_code:
             if not re.fullmatch(r'\d{5}', self.postal_code):
                 raise ValidationError({
-                    'postal_code': _("German postal code must be exactly 5 digits.")  # Немецкий почтовый индекс должен состоять ровно из 5 цифр.
+                    'postal_code': _("German postal code must be exactly 5 digits.")
+                    # Немецкий почтовый индекс должен состоять ровно из 5 цифр.
                 })
 
-        # Защита от пустого города (только пробелы)
         if self.city and not self.city.strip():
             raise ValidationError({
-                'city': _("City name cannot be empty.")  # Название города не может быть пустым.
+                'city': _("City name cannot be empty.")
+                # Название города не может быть пустым.
             })
 
     def save(self, *args, **kwargs):
-        """Ensure model validation is always performed before saving."""
+        """
+        Ensure model validation is always performed before saving.
+        """
         # Гарантирует выполнение валидации перед сохранением
         self.full_clean()
         super().save(*args, **kwargs)

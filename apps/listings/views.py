@@ -32,7 +32,8 @@ logger = getLogger(__name__)
     ),
 )
 class ListingListView(generics.ListCreateAPIView):
-    """List active listings publicly or create a new listing (landlords only).
+    """
+    List active listings publicly or create a new listing (landlords only).
 
     Supports search, filtering by price/rooms/type/city, and ordering.
     On search, saves query to history for authenticated users.
@@ -46,14 +47,18 @@ class ListingListView(generics.ListCreateAPIView):
     ordering = ["-created_at"]
 
     def get_permissions(self):
-        """Allow anyone to list; restrict creation to landlords."""
+        """
+        Allow anyone to list; restrict creation to landlords.
+        """
         # Разрешает всем просматривать; создание — только арендодателям
         if self.request.method == "POST":
             return [IsLandlord()]
         return [permissions.AllowAny()]
 
     def get_queryset(self):
-        """Return active, non-deleted listings."""
+        """
+        Return active, non-deleted listings.
+        """
         # Всё фильтруется автоматически через ListingFilter
         return Listing.objects.filter(is_active=True, is_deleted=False)
 
@@ -71,7 +76,9 @@ class ListingListView(generics.ListCreateAPIView):
         return response
 
     def perform_create(self, serializer):
-        """Assign the current user as the listing owner and log the event."""
+        """
+        Assign the current user as the listing owner and log the event.
+        """
         # Назначает текущего пользователя владельцем объявления и логирует событие
         listing = serializer.save(owner=self.request.user)
         logger.info(f"Listing {listing.id} created by landlord {self.request.user.id}")
@@ -108,21 +115,27 @@ class ListingListView(generics.ListCreateAPIView):
     ),
 )
 class ListingDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update, or soft-delete a listing with ownership validation."""
+    """
+    Retrieve, update, or soft-delete a listing with ownership validation.
+    """
     # Получение, обновление или мягкое удаление объявления с проверкой прав
 
     queryset = Listing.objects.filter(is_deleted=False)
     serializer_class = ListingSerializer
 
     def get_permissions(self):
-        """Allow public read; restrict write operations to the owner."""
+        """
+        Allow public read; restrict write operations to the owner.
+        """
         # Чтение — публичное; запись — только владельцу
         if self.request.method in ["PUT", "PATCH", "DELETE"]:
             return [IsOwner()]
         return [permissions.AllowAny()]
 
     def retrieve(self, request, *args, **kwargs):
-        """Record view in history for authenticated users."""
+        """
+        Record view in history for authenticated users.
+        """
         # Записывает просмотр в историю для авторизованных пользователей
         instance = self.get_object()
         if request.user.is_authenticated:
@@ -142,14 +155,18 @@ class ListingDetailView(generics.RetrieveUpdateDestroyAPIView):
     )
 )
 class PopularListingsView(generics.ListAPIView):
-    """Return the 10 most viewed active listings."""
+    """
+    Return the 10 most viewed active listings.
+    """
     # Возвращает 10 самых популярных активных объявлений по количеству просмотров
 
     serializer_class = ListingSerializer
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        """Annotate and order listings by view count, limit to top 10."""
+        """
+        Annotate and order listings by view count, limit to top 10.
+        """
         # Аннотирует и сортирует объявления по количеству просмотров, ограничивает до 10
         return (
             Listing.objects.filter(is_active=True, is_deleted=False)

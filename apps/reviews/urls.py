@@ -10,5 +10,5 @@ urlpatterns = [
         "listings/<int:listing_id>/reviews/",
         ReviewListView.as_view(),
         name="review-list"
-    ),  # Список и создание отзывов для объявления
+    ),
 ]

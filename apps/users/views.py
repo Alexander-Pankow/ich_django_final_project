@@ -19,14 +19,18 @@ from .serializers import RegisterSerializer, UserSerializer
     ),
 )
 class RegisterView(generics.CreateAPIView):
-    """Register a new user."""
+    """
+    Register a new user.
+    """
     # Регистрация нового пользователя
 
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
-        """Handle user registration and return user data without password."""
+        """
+        Handle user registration and return user data without password.
+        """
         # Обрабатывает регистрацию пользователя и возвращает данные без пароля
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -42,12 +46,16 @@ class RegisterView(generics.CreateAPIView):
     ),
 )
 class CurrentUserView(generics.RetrieveAPIView):
-    """Retrieve current user details."""
+    """
+    Retrieve current user details.
+    """
     # Получение данных текущего пользователя
 
     serializer_class = UserSerializer
 
     def get_object(self):
-        """Return the currently authenticated user."""
+        """
+        Return the currently authenticated user.
+        """
         # Возвращает текущего авторизованного пользователя
         return self.request.user

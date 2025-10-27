@@ -44,12 +44,12 @@ class PopularSearchView(generics.GenericAPIView):
                 created_at__gte=since,
                 query__isnull=False,
             )
-            .annotate(query_length=Length('query'))  # добавляем длину запроса
-            .filter(query_length__gt=2)              # фильтруем только > 2 символов
-            .exclude(query="")                       # исключаем пустые строки
-            .values("query")                         # группируем по тексту запроса
-            .annotate(count=Count("query"))          # считаем количество
-            .order_by("-count")[:10]                 # топ-10
+            .annotate(query_length=Length('query'))
+            .filter(query_length__gt=2)
+            .exclude(query="")
+            .values("query")
+            .annotate(count=Count("query"))
+            .order_by("-count")[:10]
         )
 
         serializer = self.get_serializer(queryset, many=True)

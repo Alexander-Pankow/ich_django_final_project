@@ -80,28 +80,37 @@ class Booking(BaseModel):
         """
         # Выполняет валидацию бизнес-логики: даты, длительность, пересечения, запрет изменения арендатора/объявления
 
-        if self.start_date and self.end_date:
-            validate_end_date_after_start(self.start_date, self.end_date)
-            validate_booking_duration(self.start_date, self.end_date)
-            if self.tenant and self.listing:
-                validate_not_own_listing(self.tenant, self.listing)
-                if self.pk is not None:
-                    old = Booking.objects.filter(pk=self.pk).first()
-                    if old:
-                        if old.tenant != self.tenant:
-                            raise ValidationError(
-                                _("Cannot change tenant after booking is created.")  # Нельзя изменить арендатора после создания бронирования.
-                            )
-                        if old.listing != self.listing:
-                            raise ValidationError(
-                                _("Cannot change listing after booking is created.")  # Нельзя изменить объявление после создания бронирования.
-                            )
-                        if old.start_date != self.start_date or old.end_date != self.end_date:
-                            validate_no_overlapping_booking(
-                                self.listing, self.start_date, self.end_date, exclude_id=self.pk
-                            )
-                else:
-                    validate_no_overlapping_booking(self.listing, self.start_date, self.end_date)
+        if not (self.start_date and self.end_date):
+            return  # Валидация дат будет на уровне полей
+
+        validate_end_date_after_start(self.start_date, self.end_date)
+        validate_booking_duration(self.start_date, self.end_date)
+
+        if not (self.tenant and self.listing):
+            return
+
+        validate_not_own_listing(self.tenant, self.listing)
+
+        if self.pk is not None:
+            self._validate_immutable_fields()
+            old = Booking.objects.filter(pk=self.pk).first()
+            if old and (old.start_date != self.start_date or old.end_date != self.end_date):
+                validate_no_overlapping_booking(
+                    self.listing, self.start_date, self.end_date, exclude_id=self.pk
+                )
+        else:
+            validate_no_overlapping_booking(self.listing, self.start_date, self.end_date)
+
+    def _validate_immutable_fields(self):
+        """
+        Validate that tenant and listing cannot be changed after creation.
+        """
+        old = Booking.objects.filter(pk=self.pk).only('tenant', 'listing').first()
+        if old:
+            if old.tenant != self.tenant:
+                raise ValidationError(_("Cannot change tenant after booking is created."))
+            if old.listing != self.listing:
+                raise ValidationError(_("Cannot change listing after booking is created."))
 
     def save(self, *args, **kwargs):
         """

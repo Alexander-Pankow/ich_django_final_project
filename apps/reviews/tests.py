@@ -12,7 +12,10 @@ from apps.bookings.models import Booking
 
 
 class ReviewModelTest(TestCase):
-    """Tests for the Review model."""  # Тесты модели отзыва
+    """
+    Tests for the Review model.
+    """
+    # Тесты модели отзыва
 
     def setUp(self):
         Group.objects.get_or_create(name="Landlords")
@@ -54,7 +57,10 @@ class ReviewModelTest(TestCase):
         self.booking.refresh_from_db()
 
     def test_review_creation(self):
-        """Test creating a review."""  # Тест создания отзыва
+        """
+        Test creating a review.
+        """
+        # Тест создания отзыва
         review = Review.objects.create(
             booking=self.booking,
             rating=5,
@@ -66,7 +72,10 @@ class ReviewModelTest(TestCase):
         self.assertEqual(review.author, self.tenant)
 
     def test_one_review_per_booking(self):
-        """Test that only one review per booking is allowed."""  # Тест ограничения: один отзыв на бронирование
+        """
+        Test that only one review per booking is allowed.
+        """
+        # Тест ограничения: один отзыв на бронирование
         Review.objects.create(
             booking=self.booking,
             rating=4,
@@ -81,7 +90,10 @@ class ReviewModelTest(TestCase):
 
 
 class ReviewListViewTest(APITestCase):
-    """Tests for listing and creating reviews."""  # Тесты списка и создания отзывов
+    """
+    Tests for listing and creating reviews.
+    """
+    # Тесты списка и создания отзывов
 
     def setUp(self):
         Group.objects.get_or_create(name="Landlords")
@@ -123,7 +135,10 @@ class ReviewListViewTest(APITestCase):
         self.booking.refresh_from_db()
 
     def test_create_review(self):
-        """Test tenant can create a review after stay completion."""  # Тест создания отзыва арендатором после проживания
+        """
+        Test tenant can create a review after stay completion.
+        """
+        # Тест создания отзыва арендатором после проживания
         self.client.force_authenticate(user=self.tenant)
         url = reverse("review-list", kwargs={"listing_id": self.listing.id})
         data = {
@@ -136,7 +151,10 @@ class ReviewListViewTest(APITestCase):
         self.assertTrue(Review.objects.filter(booking=self.booking).exists())
 
     def test_create_review_without_completed_booking(self):
-        """Test review creation is blocked without a completed booking."""  # Тест запрета без завершённого бронирования
+        """
+        Test review creation is blocked without a completed booking.
+        """
+        # Тест запрета без завершённого бронирования
         future_booking = Booking.objects.create(
             listing=self.listing,
             tenant=self.tenant,
@@ -155,7 +173,10 @@ class ReviewListViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_review_by_landlord_forbidden(self):
-        """Test landlord cannot create a review."""  # Тест запрета для арендодателя
+        """
+        Test landlord cannot create a review.
+        """
+        # Тест запрета для арендодателя
         self.client.force_authenticate(user=self.landlord)
         url = reverse("review-list", kwargs={"listing_id": self.listing.id})
         data = {
@@ -167,7 +188,10 @@ class ReviewListViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_reviews_public(self):
-        """Test public access to reviews list."""  # Тест публичного доступа к отзывам
+        """
+        Test public access to reviews list.
+        """
+        # Тест публичного доступа к отзывам
         Review.objects.create(
             booking=self.booking,
             rating=5,
@@ -179,7 +203,10 @@ class ReviewListViewTest(APITestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_create_review_unauthenticated_forbidden(self):
-        """Test unauthenticated users cannot create reviews."""  # Тест запрета для неавторизованных
+        """
+        Test unauthenticated users cannot create reviews.
+        """
+        # Тест запрета для неавторизованных
         url = reverse("review-list", kwargs={"listing_id": self.listing.id})
         data = {
             "booking": self.booking.id,

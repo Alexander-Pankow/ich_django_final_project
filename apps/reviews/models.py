@@ -8,7 +8,9 @@ from apps.common.validators import validate_booking_for_review
 
 
 class Review(BaseModel):
-    """Represents a tenant's review and rating for a completed booking."""
+    """
+    Represents a tenant's review and rating for a completed booking.
+    """
     # Представляет отзыв и рейтинг арендатора по завершённому бронированию
 
     booking = models.OneToOneField(
@@ -30,24 +32,32 @@ class Review(BaseModel):
 
     @property
     def listing(self):
-        """Return the listing associated with this review."""
+        """
+        Return the listing associated with this review.
+        """
         # Возвращает объявление, связанное с этим отзывом
         return self.booking.listing if self.booking else None
 
     @property
     def author(self):
-        """Return the tenant who wrote the review."""
+        """
+        Return the tenant who wrote the review.
+        """
         # Возвращает арендатора, оставившего отзыв
         return self.booking.tenant if self.booking else None
 
     def clean(self):
-        """Validate that the booking is eligible for a review."""
+        """
+        Validate that the booking is eligible for a review.
+        """
         # Проверяет, что бронирование можно оценить (завершено и в прошлом)
         if self.booking:
             validate_booking_for_review(self.booking)
 
     def save(self, *args, **kwargs):
-        """Ensure model validation is performed before saving."""
+        """
+        Ensure model validation is performed before saving.
+        """
         # Гарантирует выполнение валидации перед сохранением
         self.full_clean()
         super().save(*args, **kwargs)

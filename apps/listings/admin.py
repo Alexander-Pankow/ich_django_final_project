@@ -5,7 +5,9 @@ from .models import Listing
 
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
-    """Admin interface for managing housing listings."""
+    """
+    Admin interface for managing housing listings.
+    """
     # Админка управления объявлениями о жилье
 
     list_display = (

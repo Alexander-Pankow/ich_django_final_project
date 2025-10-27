@@ -6,7 +6,9 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    """Custom admin interface for the User model with email as the primary identifier."""
+    """
+    Custom admin interface for the User model with email as the primary identifier.
+    """
     # Кастомная админка для модели пользователя с email в качестве основного идентификатора
 
     fieldsets = (
